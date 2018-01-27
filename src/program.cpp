@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "Sierra/tokenizer.h"
+#include "Sierra/parser.h"
 
 
 void js_print(const CFunctionsScopePtr &v, void *) {
@@ -24,6 +25,7 @@ int main(int , char **)
 	topOfStack = &dummy;
 	CTinyJS *js = new CTinyJS();
 	js->addNative("function sierra_tok(code)", &archivist::sierra::js_token, 0);
+	js->addNative("function sierra_parse(code)", &archivist::sierra::js_parse, 0);
 	js->addNative("function print(text)", &js_print, 0);
 	js->addNative("function dump()", &js_dump, js);
 	/* Execute out bit of code - we could call 'evaluate' here if
