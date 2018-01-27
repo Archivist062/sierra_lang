@@ -1,0 +1,6 @@
+{
+	"clang.cxxflags": [
+		"-I${workspaceRoot}/include",
+		"--std=c++14"
+	]
+}

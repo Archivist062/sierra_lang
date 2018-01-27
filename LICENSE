@@ -1,0 +1,12 @@
+The code in the listed paths is licensed under MIT License:
+
+* include/Sierra
+* src/Sierra
+
+Any other code is licensed under the license hosen by its creator:
+
+* Makefile template by Arash Partow: MIT License
+* TinyJS by Gordon Williams and Armin Diedering: under its own license present in its respectives folders
+* Catch framework: Boost License 1.0
+
+Anything else is left licenseless unless specified elsewhere.
