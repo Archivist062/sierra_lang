@@ -64,6 +64,18 @@ SierraContext::SierraContext()
 {
 	{
 		SierraType sierra_hwuint8;
+		sierra_hwuint8.size=0;
+		sierra_hwuint8.name="limiter";
+		_types[sierra_hwuint8.name]=sierra_hwuint8;
+		SierraField single;
+		single.name="self";
+		single.converter=phony_converter_generator(sierra_hwuint8.size);
+		single.offset=0;
+		single.type=&_types[sierra_hwuint8.name];
+		_types[sierra_hwuint8.name].fields.push_back(single);
+	}
+	{
+		SierraType sierra_hwuint8;
 		sierra_hwuint8.size=1;
 		sierra_hwuint8.name="hwuint8";
 		_types[sierra_hwuint8.name]=sierra_hwuint8;
