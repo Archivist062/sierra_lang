@@ -23,6 +23,7 @@ TARGET   := program
 INCLUDE  := -Iinclude/
 SRC      :=                      \
 	$(wildcard src/Sierra/*.cpp) \
+	$(wildcard src/Sierra/SubParsers/*.cpp) \
 	$(wildcard src/TinyJS/*.cpp) \
 	$(wildcard src/*.cpp)         \
 

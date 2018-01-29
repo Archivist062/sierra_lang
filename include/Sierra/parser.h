@@ -13,6 +13,8 @@ namespace archivist
 			auto tks = archivist::sierra::tokenize_string(code);
 			parse_tokens(ctx,tks);
 		}
+
+
 		
 		void js_parse(const CFunctionsScopePtr &c, void *userdata);
 		void js_parsef(const CFunctionsScopePtr &c, void *userdata);
