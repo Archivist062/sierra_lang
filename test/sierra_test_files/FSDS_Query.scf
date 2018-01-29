@@ -1,0 +1,30 @@
+type operator{
+	0 bin(32) self;
+}
+
+type uuid{
+	0 bin(16) self;
+}
+
+type event{
+	0 uint64 version;
+	8 uint64 timestamp;
+	16 uuid UUID;
+	32 bin(8) opcode;
+	40 uint64 opvalue;
+	48 operator target;
+	80 operator source;
+	128 limiter dummy;
+}
+
+type request{
+	0 hwuint64 id;
+	8 bin(8) aggregation_code;
+	16 operator target;
+}
+
+type query{
+	0 bin(8) qtype;
+	8 event data_ev;
+	8 request data_req;
+} 

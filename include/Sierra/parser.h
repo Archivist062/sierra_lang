@@ -15,5 +15,6 @@ namespace archivist
 		}
 		
 		void js_parse(const CFunctionsScopePtr &c, void *userdata);
+		void js_parsef(const CFunctionsScopePtr &c, void *userdata);
 	}
 }
