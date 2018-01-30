@@ -63,6 +63,7 @@ namespace archivist{
 			std::string name;
 			std::vector<SierraField> fields;
 			size_t size;
+			bool dynamic=false;
 		};
 
 		class SierraContext{

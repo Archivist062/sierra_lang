@@ -21,7 +21,8 @@ std::set<char> LWS_set={'\n','\t',' '};
 std::set<char> limits_set={'{','}','(',')','[',']'};
 std::set<std::string> keywords_set={
 	"type",
-	"bin"
+	"bin",
+	"auto"
 };
 std::string statement_end(";");
 std::string assignment_operator("=");

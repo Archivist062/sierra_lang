@@ -233,8 +233,12 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 	}
 	parsectx.index+=2;
 	size_t max_offset=0;
+	bool dynamic=false;
 	for(auto n : fields)
+	{
 		max_offset=std::max(n.offset+n.type->size,max_offset);
+		dynamic|=n.repeated|n.type->dynamic;
+	}
 	SierraType type = {name.token,fields,max_offset};
 	ctx._types[type.name]=type;
 }
