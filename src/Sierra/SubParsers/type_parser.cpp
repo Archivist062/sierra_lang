@@ -4,9 +4,11 @@
 using namespace archivist::sierra;
 using namespace parsers;
 
-SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_context& parsectx)
+SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_context& parsectx,const std::vector<SierraField>& prev_fields)
 {
-	SierraToken offset,type,name,defaultval;
+	SierraToken offset,type,name,defaultval,repeat_field;
+	bool repeated=false;
+	SierraField* repeatptr=nullptr;
 	SierraField ret;
 	try{
 		offset=parsectx.next();
@@ -91,13 +93,62 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 				+type.token
 			);
 		}
-		name=parsectx.next();
+
+		{
+			auto tmp=parsectx.next();
+			if(tmp.type==tk_type::TK_operator && tmp.token=="*")
+			{
+				repeat_field=parsectx.next();
+				repeated=true;
+				if(repeat_field.type!=tk_type::TK_symbol)
+				{
+					throw std::runtime_error(
+						std::string("Expected symbol as repeat field size, got")
+						+std::string(":")
+						+repeat_field.token
+					);
+				}
+
+				for(size_t rep=0;rep<prev_fields.size();rep++)
+					if(prev_fields[rep].name==repeat_field.token)
+					{
+						repeatptr=(SierraField*)&(prev_fields[rep]);
+						break;
+					}
+				
+				if(repeatptr==nullptr)
+				{
+					throw std::runtime_error(
+						std::string("Expected symbol as repeat field size, got")
+						+std::string(":")
+						+repeat_field.token
+						+std::string(" which is not valid field")
+					);
+				}
+				name=parsectx.next();
+			}
+			else
+			{
+				name=tmp;
+			}
+		}
+
 		if(name.type!=tk_type::TK_symbol)
 		{
 			throw std::runtime_error(
 				std::string("Expected symbol, got")
 				+std::string(":")
 				+name.token
+			);
+		}
+		for(auto rep : prev_fields)
+		if(rep.name==name.token)
+		{
+			throw std::runtime_error(
+				std::string("Field")
+				+std::string(":")
+				+name.token
+				+std::string(" already defined")
 			);
 		}
 
@@ -115,6 +166,8 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 		ret.type=&(*it_type).second;
 		char* dummy=(char*)offset.token.c_str()+offset.token.size();
 		ret.offset=strtoll(offset.token.c_str(),&dummy,10);
+		ret.repeated=repeated;
+		ret.repeat_size=repeatptr;
 	}catch(token_expected_exception& e)
 	{
 		parsectx.index--;
@@ -166,7 +219,7 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 
 	while(tmp.type!=tk_type::TK_limit || tmp.token!="}")
 	{
-		fields.push_back(archivist::sierra::parsers::parse_field(ctx,parsectx));
+		fields.push_back(archivist::sierra::parsers::parse_field(ctx,parsectx,fields));
 		
 		try{
 			tmp=parsectx.next();

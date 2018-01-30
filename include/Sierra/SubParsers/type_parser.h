@@ -8,7 +8,7 @@ namespace archivist
 	{
 		namespace parsers
 		{
-			SierraField parse_field(SierraContext& ctx, parsing_context& parsectx);
+			SierraField parse_field(SierraContext& ctx, parsing_context& parsectx,const std::vector<SierraField>& prev_fields);
 			void parse_type(SierraContext& ctx, parsing_context& parsectx);
 		}
 	}

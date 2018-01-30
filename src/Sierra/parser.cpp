@@ -77,7 +77,12 @@ void archivist::sierra::js_parsef(const CFunctionsScopePtr &c, void *userdata) {
 		std::cout<<type.second.name<<":"<<type.second.size<<std::endl;
 		for(auto field : type.second.fields)
 		{
-			std::cout<<"\t"<<field.type->name<<" "<<field.offset<<":"<<field.name<<std::endl;
+			std::cout<<"\t"<<field.type->name<<" "<<field.offset<<":"<<field.name;
+			if(field.repeated)
+			{
+				std::cout<<"*"<<field.repeat_size->name;
+			}
+			std::cout<<std::endl;
 		}
 	}
 }

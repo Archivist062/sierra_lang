@@ -145,6 +145,12 @@ SierraTokenString archivist::sierra::tokenize_string(std::string code)
 					state.position++;
 					break;
 				}
+				case '*':
+				{
+					ret.push_back({tk_type::TK_operator,"*",state.line});
+					state.position++;
+					break;
+				}
 				case '#':
 				{
 					skip_line(state);

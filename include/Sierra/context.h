@@ -54,6 +54,8 @@ namespace archivist{
 			SierraType* type;
 			size_t offset;
 			std::function<char*(char*)> converter;
+			bool repeated=false;
+			SierraField* repeat_size=nullptr;
 		};
 
 		class SierraType{
