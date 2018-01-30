@@ -1,0 +1,12 @@
+build/objects/src/TinyJS/TinyJS_MathFunctions.o
+build/apps/program
+build/objects/src/program.o
+build/objects/src/Sierra/context.o
+build/objects/src/Sierra/parser.o
+build/objects/src/Sierra/tokenizer.o
+build/objects/src/Sierra/SubParsers/type_parser.o
+build/objects/src/TinyJS/pool_allocator.o
+build/objects/src/TinyJS/TinyJS.o
+build/objects/src/TinyJS/TinyJS_Functions.o
+build/objects/src/TinyJS/TinyJS_StringFunctions.o
+build/objects/src/TinyJS/TinyJS_Threading.o
