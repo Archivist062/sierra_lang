@@ -78,6 +78,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint8;
 		sierra_hwuint8.size=1;
 		sierra_hwuint8.name="hwuint8";
+		sierra_hwuint8.to_hwsize=[](char* field)->size_t{return *(uint8_t*)field;};
 		_types[sierra_hwuint8.name]=sierra_hwuint8;
 		SierraField single;
 		single.name="self";
@@ -90,6 +91,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=2;
 		sierra_hwuint.name="hwuint16";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(uint16_t*)field;};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -102,6 +104,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=4;
 		sierra_hwuint.name="hwuint32";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(uint32_t*)field;};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -114,6 +117,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=8;
 		sierra_hwuint.name="hwuint64";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(uint64_t*)field;};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -126,6 +130,9 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint8;
 		sierra_hwuint8.size=1;
 		sierra_hwuint8.name="uint8";
+		sierra_hwuint8.to_hwsize=[](char* field)->size_t{
+			return *(uint64_t*)field;
+		};
 		_types[sierra_hwuint8.name]=sierra_hwuint8;
 		SierraField single;
 		single.name="self";
@@ -138,6 +145,10 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=2;
 		sierra_hwuint.name="uint16";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{
+
+			return primitives::ltou16(*(uint16_t*)field);
+		};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -150,6 +161,10 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=4;
 		sierra_hwuint.name="uint32";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{
+
+			return primitives::ltou32(*(uint32_t*)field);
+		};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -162,6 +177,10 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=8;
 		sierra_hwuint.name="uint64";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{
+
+			return primitives::ltou64(*(uint64_t*)field);
+		};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -175,6 +194,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint8;
 		sierra_hwuint8.size=1;
 		sierra_hwuint8.name="hwint8";
+		sierra_hwuint8.to_hwsize=[](char* field)->size_t{return *(int8_t*)field;};
 		_types[sierra_hwuint8.name]=sierra_hwuint8;
 		SierraField single;
 		single.name="self";
@@ -187,6 +207,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=2;
 		sierra_hwuint.name="hwint16";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(int16_t*)field;};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -199,6 +220,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=4;
 		sierra_hwuint.name="hwint32";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(int32_t*)field;};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -211,6 +233,7 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=8;
 		sierra_hwuint.name="hwint64";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(int64_t*)field;};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -223,6 +246,10 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint8;
 		sierra_hwuint8.size=1;
 		sierra_hwuint8.name="int8";
+		sierra_hwuint8.to_hwsize=[](char* field)->size_t{
+
+			return *field;
+		};
 		_types[sierra_hwuint8.name]=sierra_hwuint8;
 		SierraField single;
 		single.name="self";
@@ -235,6 +262,10 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=2;
 		sierra_hwuint.name="int16";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{
+
+			return (int16_t)primitives::ltou16(*(uint16_t*)field);
+		};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -247,6 +278,10 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=4;
 		sierra_hwuint.name="int32";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{
+
+			return (int32_t)primitives::ltou32(*(uint32_t*)field);
+		};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";
@@ -259,6 +294,10 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=8;
 		sierra_hwuint.name="int64";
+		sierra_hwuint.to_hwsize=[](char* field)->size_t{
+
+			return (int64_t)primitives::ltou64(*(uint64_t*)field);
+		};
 		_types[sierra_hwuint.name]=sierra_hwuint;
 		SierraField single;
 		single.name="self";

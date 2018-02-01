@@ -4,6 +4,15 @@
 using namespace archivist::sierra;
 using namespace parsers;
 
+
+/**
+ * @brief parse and return a field
+ * 
+ * @param ctx 
+ * @param parsectx 
+ * @param prev_fields 
+ * @return SierraField 
+ */
 SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_context& parsectx,const std::vector<SierraField>& prev_fields)
 {
 	SierraToken offset,type,name,defaultval,repeat_field;
@@ -70,7 +79,7 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 			{
 				char* dummy=(char*)field_size.token.c_str()+field_size.token.size();
 				SierraType sierra_hwuint8;
-				sierra_hwuint8.size=strtoll(field_size.token.c_str(),&dummy,10);;
+				sierra_hwuint8.size=strtoll(field_size.token.c_str(),&dummy,10);
 				sierra_hwuint8.name=binfield_name;
 				ctx._types[sierra_hwuint8.name]=sierra_hwuint8;
 				SierraField single;
@@ -178,10 +187,18 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 	return ret;
 }
 
+
+/**
+ * @brief Parse a type from a parsing context into a SierraContext
+ * 
+ * @param ctx Context where data is parsed in
+ * @param parsectx Context data is parsed from
+ */
 void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context& parsectx)
 {
 	SierraToken name,tmp;
 	std::vector<SierraField> fields;
+	size_t align=1,finish=1;
 	try{
 		name=parsectx.next();
 		if(name.type!=tk_type::TK_symbol)
@@ -199,15 +216,108 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 			std::string("Expected symbol name but none was provided")
 		);
 	}
+
 	try{
-		tmp=parsectx.next();
-		if(tmp.type!=tk_type::TK_limit || tmp.token!="{")
+		
+		for(
+			tmp=parsectx.next();
+			tmp.type!=tk_type::TK_limit && tmp.token!="{";
+			tmp=parsectx.next()
+		)
 		{
-			throw std::runtime_error(
-				std::string("Expected '{' name, got")
-				+std::string(":")
-				+tmp.token
-			);
+			if(tmp.type==tk_type::TK_limit && tmp.token=="align")
+			{
+				auto open=parsectx.next();
+				if(open.type!=tk_type::TK_limit || open.token!="(")
+				{
+					throw std::runtime_error(
+						std::string("Expected '(', got")
+						+std::string(":")
+						+open.token
+					);
+				}
+	
+				auto field_size=parsectx.next();
+				if(field_size.type!=tk_type::TK_integer)
+				{
+					throw std::runtime_error(
+						std::string("Expected integer, got")
+						+std::string(":")
+						+field_size.token
+					);
+				}
+	
+				auto close=parsectx.next();
+				if(close.type!=tk_type::TK_limit || close.token!=")")
+				{
+					throw std::runtime_error(
+						std::string("Expected ')', got")
+						+std::string(":")
+						+close.token
+					);
+				}
+				char* dummy=(char*)field_size.token.c_str()+field_size.token.size();
+				align=strtoll(field_size.token.c_str(),&dummy,10);
+				if(align<=0)
+				{
+					throw std::runtime_error(
+						std::string("Expected non null non negative alignment, got")
+						+std::string(":")
+						+std::to_string(align)
+					);
+				}
+			}
+			else if(tmp.type==tk_type::TK_limit && tmp.token=="finish")
+			{
+				auto open=parsectx.next();
+				if(open.type!=tk_type::TK_limit || open.token!="(")
+				{
+					throw std::runtime_error(
+						std::string("Expected '(', got")
+						+std::string(":")
+						+open.token
+					);
+				}
+	
+				auto field_size=parsectx.next();
+				if(field_size.type!=tk_type::TK_integer)
+				{
+					throw std::runtime_error(
+						std::string("Expected integer, got")
+						+std::string(":")
+						+field_size.token
+					);
+				}
+	
+				auto close=parsectx.next();
+				if(close.type!=tk_type::TK_limit || close.token!=")")
+				{
+					throw std::runtime_error(
+						std::string("Expected ')', got")
+						+std::string(":")
+						+close.token
+					);
+				}
+				char* dummy=(char*)field_size.token.c_str()+field_size.token.size();
+				finish=strtoll(field_size.token.c_str(),&dummy,10);
+				if(finish<=0)
+				{
+					throw std::runtime_error(
+						std::string("Expected non null non negative finish alignment, got")
+						+std::string(":")
+						+std::to_string(finish)
+					);
+				}
+				
+			}
+			else
+			{
+				throw std::runtime_error(
+					std::string("Expected '{' or option, got")
+					+std::string(":")
+					+tmp.token
+				);
+			}
 		}
 	}catch(token_expected_exception& e)
 	{
@@ -216,6 +326,7 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 			std::string("Met EOF while expecting '{'")
 		);
 	}
+
 
 	while(tmp.type!=tk_type::TK_limit || tmp.token!="}")
 	{
@@ -236,9 +347,9 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 	bool dynamic=false;
 	for(auto n : fields)
 	{
-		max_offset=std::max(n.offset+n.type->size,max_offset);
+		max_offset=std::max(n.offset+n.type->size,max_offset)+std::max(n.offset+n.type->size,max_offset)%finish;
 		dynamic=dynamic||n.repeated||n.type->dynamic;
 	}
-	SierraType type = {name.token,fields,max_offset,dynamic};
+	SierraType type = {name.token,fields,max_offset,dynamic,align,finish};
 	ctx._types[type.name]=type;
 }

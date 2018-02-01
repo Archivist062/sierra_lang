@@ -22,7 +22,9 @@ std::set<char> limits_set={'{','}','(',')','[',']'};
 std::set<std::string> keywords_set={
 	"type",
 	"bin",
-	"auto"
+	"auto",
+	"align",
+	"finish"
 };
 std::string statement_end(";");
 std::string assignment_operator("=");

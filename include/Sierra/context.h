@@ -46,7 +46,18 @@ namespace archivist{
 			}
 		}
 
-		class SierraType;
+		class SierraField;
+
+		class SierraType{
+		public:
+			std::string name;
+			std::vector<SierraField> fields;
+			size_t size;
+			bool dynamic=false;
+			std::function<size_t(char*)> to_hwsize=[](char*)->size_t{return 0;};
+			size_t alignment=1;
+			size_t final_allignment=1;
+		};
 
 		class SierraField{
 		public:
@@ -56,14 +67,11 @@ namespace archivist{
 			std::function<char*(char*)> converter;
 			bool repeated=false;
 			SierraField* repeat_size=nullptr;
-		};
-
-		class SierraType{
-		public:
-			std::string name;
-			std::vector<SierraField> fields;
-			size_t size;
-			bool dynamic=false;
+			bool dynamic_size=false;
+			std::function<size_t(char*)> current_size=[&](char*)->size_t{return this->type->size;};
+			bool dynamic_offset=false;
+			SierraField* previous_field=nullptr;
+			std::function<size_t(char*)> current_offset=[&](char*)->size_t{return this->offset;};
 		};
 
 		class SierraContext{
