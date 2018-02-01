@@ -13,15 +13,28 @@ using namespace parsers;
  * @param prev_fields 
  * @return SierraField 
  */
-SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_context& parsectx,const std::vector<SierraField>& prev_fields)
+SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_context& parsectx,const std::vector<SierraField>& prev_fields, size_t align)
 {
 	SierraToken offset,type,name,defaultval,repeat_field;
 	bool repeated=false;
-	SierraField* repeatptr=nullptr;
 	SierraField ret;
 	try{
 		offset=parsectx.next();
-		if(offset.type!=tk_type::TK_integer)
+		if(offset.type==tk_type::TK_integer)
+		{
+			char* dummy=(char*)offset.token.c_str()+offset.token.size();
+			ret.offset=strtoll(offset.token.c_str(),&dummy,10);
+		}
+		else if(offset.type==tk_type::TK_keyword && offset.token=="auto")
+		{
+			size_t max_offset=0;
+			for(auto field : prev_fields)
+			{
+				max_offset=std::max(field.offset+field.type->size,max_offset);
+			}
+			ret.offset=max_offset+max_offset%align;
+		}
+		else
 		{
 			throw std::runtime_error(
 				std::string("Expected integer, got")
@@ -92,8 +105,8 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 				single.offset=0;
 				single.type=&ctx._types[sierra_hwuint8.name];
 				ctx._types[sierra_hwuint8.name].fields.push_back(single);
+				it_type = ctx._types.find(binfield_name);
 			}
-			it_type = ctx._types.find(binfield_name);
 
 		}else{
 			throw std::runtime_error(
@@ -117,15 +130,15 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 						+repeat_field.token
 					);
 				}
-
+				ret.repeat_size=nullptr;
 				for(size_t rep=0;rep<prev_fields.size();rep++)
 					if(prev_fields[rep].name==repeat_field.token)
 					{
-						repeatptr=(SierraField*)&(prev_fields[rep]);
+						ret.repeat_size=(SierraField*)&(prev_fields[rep]);
 						break;
 					}
 				
-				if(repeatptr==nullptr)
+				if(ret.repeat_size==nullptr)
 				{
 					throw std::runtime_error(
 						std::string("Expected symbol as repeat field size, got")
@@ -173,10 +186,7 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 
 		ret.name=name.token;
 		ret.type=&(*it_type).second;
-		char* dummy=(char*)offset.token.c_str()+offset.token.size();
-		ret.offset=strtoll(offset.token.c_str(),&dummy,10);
 		ret.repeated=repeated;
-		ret.repeat_size=repeatptr;
 	}catch(token_expected_exception& e)
 	{
 		parsectx.index--;
@@ -197,7 +207,7 @@ SierraField archivist::sierra::parsers::parse_field(SierraContext& ctx, parsing_
 void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context& parsectx)
 {
 	SierraToken name,tmp;
-	std::vector<SierraField> fields;
+	SierraType type;
 	size_t align=1,finish=1;
 	try{
 		name=parsectx.next();
@@ -225,7 +235,7 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 			tmp=parsectx.next()
 		)
 		{
-			if(tmp.type==tk_type::TK_limit && tmp.token=="align")
+			if(tmp.type==tk_type::TK_keyword && tmp.token=="align")
 			{
 				auto open=parsectx.next();
 				if(open.type!=tk_type::TK_limit || open.token!="(")
@@ -267,7 +277,7 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 					);
 				}
 			}
-			else if(tmp.type==tk_type::TK_limit && tmp.token=="finish")
+			else if(tmp.type==tk_type::TK_keyword && tmp.token=="finish")
 			{
 				auto open=parsectx.next();
 				if(open.type!=tk_type::TK_limit || open.token!="(")
@@ -330,7 +340,7 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 
 	while(tmp.type!=tk_type::TK_limit || tmp.token!="}")
 	{
-		fields.push_back(archivist::sierra::parsers::parse_field(ctx,parsectx,fields));
+		type.fields.push_back(archivist::sierra::parsers::parse_field(ctx,parsectx,type.fields,align));
 		
 		try{
 			tmp=parsectx.next();
@@ -345,11 +355,15 @@ void archivist::sierra::parsers::parse_type(SierraContext& ctx, parsing_context&
 	parsectx.index+=2;
 	size_t max_offset=0;
 	bool dynamic=false;
-	for(auto n : fields)
+	for(auto n : type.fields)
 	{
 		max_offset=std::max(n.offset+n.type->size,max_offset)+std::max(n.offset+n.type->size,max_offset)%finish;
 		dynamic=dynamic||n.repeated||n.type->dynamic;
 	}
-	SierraType type = {name.token,fields,max_offset,dynamic,align,finish};
-	ctx._types[type.name]=type;
+	type.name=name.token;
+	type.size=max_offset;
+	type.dynamic=dynamic;
+	type.alignment=align;
+	type.final_alignment=finish;
+	ctx._types[type.name]=std::move(type);
 }

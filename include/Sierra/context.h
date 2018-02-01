@@ -56,7 +56,7 @@ namespace archivist{
 			bool dynamic=false;
 			std::function<size_t(char*)> to_hwsize=[](char*)->size_t{return 0;};
 			size_t alignment=1;
-			size_t final_allignment=1;
+			size_t final_alignment=1;
 		};
 
 		class SierraField{

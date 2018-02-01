@@ -72,6 +72,7 @@ void archivist::sierra::js_parsef(const CFunctionsScopePtr &c, void *userdata) {
 	while(fop.good())
 		code+=fop.get();
 	parse_string(js_ctx,code);
+	std::cerr<<js_ctx._types.size()<<" types defined"<<std::endl;
 	for(auto type : js_ctx._types)
 	{
 		std::cout<<type.second.name<<":";
@@ -80,6 +81,7 @@ void archivist::sierra::js_parsef(const CFunctionsScopePtr &c, void *userdata) {
 		}else{
 			std::cout<<type.second.size<<std::endl;
 		}
+		std::cerr<<type.second.fields.size()<<" fields defined"<<std::endl;
 		for(auto field : type.second.fields)
 		{
 			std::cout<<"\t"<<field.type->name<<" "<<field.offset<<":"<<field.name;
