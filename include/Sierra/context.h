@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <memory>
 #include <map>
 
 namespace archivist{
@@ -51,7 +52,7 @@ namespace archivist{
 		class SierraType{
 		public:
 			std::string name;
-			std::vector<SierraField> fields;
+			std::vector<std::shared_ptr<SierraField> > fields;
 			size_t size;
 			bool dynamic=false;
 			std::function<size_t(char*)> to_hwsize=[](char*)->size_t{return 0;};
@@ -62,21 +63,21 @@ namespace archivist{
 		class SierraField{
 		public:
 			std::string name;
-			SierraType* type;
+			std::shared_ptr<SierraType> type;
 			size_t offset;
 			std::function<char*(char*)> converter;
 			bool repeated=false;
-			SierraField* repeat_size=nullptr;
+			std::shared_ptr<SierraField> repeat_size=nullptr;
 			bool dynamic_size=false;
 			std::function<size_t(char*)> current_size=[&](char*)->size_t{return this->type->size;};
 			bool dynamic_offset=false;
-			SierraField* previous_field=nullptr;
+			std::shared_ptr<SierraField> previous_field=nullptr;
 			std::function<size_t(char*)> current_offset=[&](char*)->size_t{return this->offset;};
 		};
 
 		class SierraContext{
 		public:
-			std::map<std::string,SierraType> _types;
+			std::map<std::string,std::shared_ptr<SierraType> > _types;
 			SierraContext();
 		};
 

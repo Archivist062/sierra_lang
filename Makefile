@@ -45,5 +45,8 @@ build:
 	@mkdir -p $(APP_DIR)
 	@mkdir -p $(OBJ_DIR)
 
+test:
+	$(APP_DIR)/$(TARGET) test/test01.js
+
 clean:
 	rm -rf build/*

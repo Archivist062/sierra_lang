@@ -56,10 +56,10 @@ void archivist::sierra::js_parse(const CFunctionsScopePtr &c, void *userdata) {
 	parse_string(js_ctx,code);
 	for(auto type : js_ctx._types)
 	{
-		std::cout<<type.second.name<<":"<<type.second.size<<std::endl;
-		for(auto field : type.second.fields)
+		std::cout<<type.second->name<<":"<<type.second->size<<std::endl;
+		for(auto field : type.second->fields)
 		{
-			std::cout<<"\t"<<field.type->name<<" "<<field.offset<<":"<<field.name<<std::endl;
+			std::cout<<"\t"<<field->type->name<<" "<<field->offset<<":"<<field->name<<std::endl;
 		}
 	}
 }
@@ -70,24 +70,28 @@ void archivist::sierra::js_parsef(const CFunctionsScopePtr &c, void *userdata) {
 	std::stringstream val;
 	std::ifstream fop(file);
 	while(fop.good())
-		code+=fop.get();
+	{
+		std::string line;
+		std::getline(fop,line);
+		code+=line;
+	}
 	parse_string(js_ctx,code);
 	std::cerr<<js_ctx._types.size()<<" types defined"<<std::endl;
 	for(auto type : js_ctx._types)
 	{
-		std::cout<<type.second.name<<":";
-		if(type.second.dynamic){
+		std::cout<<type.second->name<<":";
+		if(type.second->dynamic){
 			std::cout<<"dynamic"<<std::endl;
 		}else{
-			std::cout<<type.second.size<<std::endl;
+			std::cout<<type.second->size<<std::endl;
 		}
-		std::cerr<<type.second.fields.size()<<" fields defined"<<std::endl;
-		for(auto field : type.second.fields)
+		std::cerr<<type.second->fields.size()<<" fields defined"<<std::endl;
+		for(auto field : type.second->fields)
 		{
-			std::cout<<"\t"<<field.type->name<<" "<<field.offset<<":"<<field.name;
-			if(field.repeated)
+			std::cout<<"\t"<<field->type->name<<" "<<field->offset<<":"<<field->name;
+			if(field->repeated)
 			{
-				std::cout<<"*"<<field.repeat_size->name;
+				std::cout<<"*"<<field->repeat_size->name;
 			}
 			std::cout<<std::endl;
 		}

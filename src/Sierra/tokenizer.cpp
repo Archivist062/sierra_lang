@@ -78,7 +78,7 @@ void parse_delegator(SierraTokenString& target,tokenizing_state& state)
 	}
 	else
 	{
-		throw std::runtime_error(std::string("Unexpected character:")+state.code[state.position]);
+		throw std::runtime_error(std::string("Unexpected character:")+state.code[state.position]+" (codepoint="+std::to_string(state.code[state.position])+")");
 	}
 	build:
 	if(keywords_set.find(sstr.str())!=keywords_set.end())

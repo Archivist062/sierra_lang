@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include "Sierra/tokenizer.h"
 #include "Sierra/parser.h"
 
@@ -19,7 +20,7 @@ char *topOfStack;
 #define sizeOfStack 1*1024*1024 /* for example 1 MB depend of Compiler-Options */
 #define sizeOfSafeStack 50*1024 /* safety area */
 
-int main(int , char **)
+int main(int argc, char** argv)
 {
 	char dummy;
 	topOfStack = &dummy;
@@ -34,6 +35,20 @@ int main(int , char **)
 	js->setStackBase(topOfStack-(sizeOfStack-sizeOfSafeStack));
 	try {
 		js->execute("var lets_quit = 0; function quit() { lets_quit = 1; }");
+
+		for(int i=1;i<argc;i++)
+		{
+			std::ifstream in(argv[i]);
+			std::string code="";
+			while(in.good())
+			{
+				std::string line;
+				std::getline(in,line);
+				code+=line;
+			}
+			js->execute(code,argv[i]);
+		}
+
 		js->execute("print(\"Interactive mode... Type quit(); to exit, or print(...); to print something, or dump() to dump the symbol table!\");");
 	} catch (CScriptException *e) {
 		printf("%s\n", e->toString().c_str());

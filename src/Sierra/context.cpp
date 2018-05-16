@@ -1,6 +1,7 @@
 #include "Sierra/context.h"
 #include <stdlib.h>
 #include <string.h>
+#include <utility>
 /*
 "uint8",
 "uint16",
@@ -66,65 +67,65 @@ SierraContext::SierraContext()
 		SierraType sierra_hwuint8;
 		sierra_hwuint8.size=0;
 		sierra_hwuint8.name="limiter";
-		_types[sierra_hwuint8.name]=sierra_hwuint8;
+		_types[sierra_hwuint8.name]=std::make_shared<SierraType>(sierra_hwuint8);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint8.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint8.name];
-		_types[sierra_hwuint8.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint8.name];
+		_types[sierra_hwuint8.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint8;
 		sierra_hwuint8.size=1;
 		sierra_hwuint8.name="hwuint8";
 		sierra_hwuint8.to_hwsize=[](char* field)->size_t{return *(uint8_t*)field;};
-		_types[sierra_hwuint8.name]=sierra_hwuint8;
+		_types[sierra_hwuint8.name]=std::make_shared<SierraType>(sierra_hwuint8);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint8.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint8.name];
-		_types[sierra_hwuint8.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint8.name];
+		_types[sierra_hwuint8.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=2;
 		sierra_hwuint.name="hwuint16";
 		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(uint16_t*)field;};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=4;
 		sierra_hwuint.name="hwuint32";
 		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(uint32_t*)field;};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=8;
 		sierra_hwuint.name="hwuint64";
 		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(uint64_t*)field;};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint8;
@@ -133,13 +134,13 @@ SierraContext::SierraContext()
 		sierra_hwuint8.to_hwsize=[](char* field)->size_t{
 			return *(uint64_t*)field;
 		};
-		_types[sierra_hwuint8.name]=sierra_hwuint8;
+		_types[sierra_hwuint8.name]=std::make_shared<SierraType>(sierra_hwuint8);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint8.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint8.name];
-		_types[sierra_hwuint8.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint8.name];
+		_types[sierra_hwuint8.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
@@ -149,13 +150,13 @@ SierraContext::SierraContext()
 
 			return primitives::ltou16(*(uint16_t*)field);
 		};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
@@ -165,13 +166,13 @@ SierraContext::SierraContext()
 
 			return primitives::ltou32(*(uint32_t*)field);
 		};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
@@ -181,13 +182,13 @@ SierraContext::SierraContext()
 
 			return primitives::ltou64(*(uint64_t*)field);
 		};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	/* */
 	{
@@ -195,52 +196,52 @@ SierraContext::SierraContext()
 		sierra_hwuint8.size=1;
 		sierra_hwuint8.name="hwint8";
 		sierra_hwuint8.to_hwsize=[](char* field)->size_t{return *(int8_t*)field;};
-		_types[sierra_hwuint8.name]=sierra_hwuint8;
+		_types[sierra_hwuint8.name]=std::make_shared<SierraType>(sierra_hwuint8);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint8.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint8.name];
-		_types[sierra_hwuint8.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint8.name];
+		_types[sierra_hwuint8.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=2;
 		sierra_hwuint.name="hwint16";
 		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(int16_t*)field;};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=4;
 		sierra_hwuint.name="hwint32";
 		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(int32_t*)field;};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
 		sierra_hwuint.size=8;
 		sierra_hwuint.name="hwint64";
 		sierra_hwuint.to_hwsize=[](char* field)->size_t{return *(int64_t*)field;};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=phony_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint8;
@@ -250,13 +251,13 @@ SierraContext::SierraContext()
 
 			return *field;
 		};
-		_types[sierra_hwuint8.name]=sierra_hwuint8;
+		_types[sierra_hwuint8.name]=std::make_shared<SierraType>(sierra_hwuint8);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint8.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint8.name];
-		_types[sierra_hwuint8.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint8.name];
+		_types[sierra_hwuint8.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
@@ -266,13 +267,13 @@ SierraContext::SierraContext()
 
 			return (int16_t)primitives::ltou16(*(uint16_t*)field);
 		};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
@@ -282,13 +283,13 @@ SierraContext::SierraContext()
 
 			return (int32_t)primitives::ltou32(*(uint32_t*)field);
 		};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 	{
 		SierraType sierra_hwuint;
@@ -298,13 +299,13 @@ SierraContext::SierraContext()
 
 			return (int64_t)primitives::ltou64(*(uint64_t*)field);
 		};
-		_types[sierra_hwuint.name]=sierra_hwuint;
+		_types[sierra_hwuint.name]=std::make_shared<SierraType>(sierra_hwuint);
 		SierraField single;
 		single.name="self";
 		single.converter=bswap_converter_generator(sierra_hwuint.size);
 		single.offset=0;
-		single.type=&_types[sierra_hwuint.name];
-		_types[sierra_hwuint.name].fields.push_back(single);
+		single.type=_types[sierra_hwuint.name];
+		_types[sierra_hwuint.name]->fields.push_back(std::make_shared<SierraField>(single));
 	}
 }
 
